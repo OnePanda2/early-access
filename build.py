@@ -23,6 +23,15 @@ RESERVED = {"assets", "404", "index"}
 HEX = re.compile(r"^#[0-9a-fA-F]{6}$")
 
 
+def rich(text):
+    """Escape text and turn *words* into <em>words</em> (used for the headline accent)."""
+    return re.sub(r"\*(.+?)\*", r"<em>\1</em>", escape(text))
+
+
+def plain(text):
+    return text.replace("*", "")
+
+
 def fail(message):
     sys.exit(f"error: {message}")
 
@@ -66,10 +75,14 @@ def page(site, *, title, description, url, accent, body, noindex=False):
 <meta property="og:description" content="{e(description)}">
 <meta property="og:url" content="{e(url)}">
 <meta name="twitter:card" content="summary">
-<meta name="theme-color" content="{e(accent)}">
+<meta name="theme-color" content="#07060b">
 {robots}
 <link rel="canonical" href="{e(url)}">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+<script>document.documentElement.classList.add("js")</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/assets/style.css">
 <style>:root{{--accent:{e(accent)}}}</style>
 </head>
@@ -106,8 +119,10 @@ def demo_block(demo):
     )
     note = f'<p class="demo-note">{escape(demo["note"])}</p>' if demo.get("note") else ""
     return (
-        '<section class="demo" aria-label="Preview"><p class="kicker">Preview</p>'
-        f'<h2>{escape(demo.get("title", ""))}</h2><div class="chat">{lines}</div>{note}</section>'
+        '<section class="demo reveal" aria-label="Preview">'
+        '<div class="window-bar" aria-hidden="true"><i></i><i></i><i></i><span>Live preview</span></div>'
+        f'<div class="demo-body"><p class="kicker">A lesson in Cotsi style</p>'
+        f'<h2>{escape(demo.get("title", ""))}</h2><div class="chat">{lines}</div>{note}</div></section>'
     )
 
 
@@ -115,11 +130,12 @@ def highlights_block(items):
     if not items:
         return ""
     cards = "".join(
-        f'<li><span class="icon" aria-hidden="true">{escape(h.get("icon", "✨"))}</span>'
+        f'<li><div class="card-top"><span class="icon" aria-hidden="true">{escape(h.get("icon", "✨"))}</span>'
+        f'<span class="num" aria-hidden="true">0{i}</span></div>'
         f'<h3>{escape(h.get("title", ""))}</h3><p>{escape(h.get("text", ""))}</p></li>'
-        for h in items
+        for i, h in enumerate(items, 1)
     )
-    return f'<section class="highlights"><ul>{cards}</ul></section>'
+    return f'<section class="highlights reveal"><ul>{cards}</ul></section>'
 
 
 def form_block(site, p):
@@ -130,7 +146,7 @@ def form_block(site, p):
         f'<a class="launch" href="{e(p["launch_url"])}">It\'s live: open {e(p["name"])} →</a>'
         if p.get("launch_url") else ""
     )
-    return f"""<section class="join" id="join">
+    return f"""<section class="join reveal" id="join">
   {launch}
   <form class="signup" novalidate
         data-endpoint="{e(site.get('form_endpoint', ''))}"
@@ -168,17 +184,24 @@ def project_page(site, p):
 <main class="project">
   <section class="hero">
     <div class="logo" aria-hidden="true">{escape(p.get('emoji', '✨'))}</div>
-    <p class="badge">{escape(p.get('status', 'Early access'))}</p>
-    <h1><span class="name">{escape(p['name'])}</span> {escape(p['tagline'])}</h1>
+    <p class="badge"><span class="pulse" aria-hidden="true"></span>{escape(p.get('status', 'Early access'))}</p>
+    <p class="wordmark">{escape(p['name'])}</p>
+    <h1>{rich(p['tagline'])}</h1>
     <p class="lede">{escape(p['description'])}</p>
-    <a class="jump" href="#join">{escape(p.get('cta') or 'Get early access')} ↓</a>
+    <div class="hero-cta">
+      <a class="btn jump" href="#join">{escape(p.get('cta') or 'Get early access')} <span aria-hidden="true">→</span></a>
+      <p class="meta">Free · No spam · Takes 10 seconds</p>
+    </div>
   </section>
   {demo_block(p.get('demo'))}
   {highlights_block(p.get('highlights'))}
   {form_block(site, p)}
 </main>
+<a class="float-cta" href="#join" aria-hidden="true" tabindex="-1">
+  <span>{escape(p.get('cta') or 'Get early access')}</span><span class="arrow" aria-hidden="true">→</span>
+</a>
 <script src="/assets/form.js" defer></script>"""
-    return page(site, title=f"{p['name']}: {p['tagline']}", description=p["description"],
+    return page(site, title=f"{p['name']}: {plain(p['tagline'])}", description=p["description"],
                 url=url, accent=accent, body=hero)
 
 
@@ -187,13 +210,13 @@ def home_page(site, projects):
     cards = "".join(
         f'<li><a href="/{escape(p["slug"])}/" style="--accent:{escape(p.get("accent") or "#7c6af7")}">'
         f'<span class="logo" aria-hidden="true">{escape(p.get("emoji", "✨"))}</span>'
-        f'<span><b>{escape(p["name"])}</b><em>{escape(p["tagline"])}</em>'
+        f'<span><b>{escape(p["name"])}</b><em>{escape(plain(p["tagline"]))}</em>'
         f'<small>{escape(p.get("status", "Early access"))}</small></span><i aria-hidden="true">→</i></a></li>'
         for p in listed
     ) or "<li class=\"empty\">New projects are on the way.</li>"
     body = f"""{topbar(site)}
 <main class="home">
-  <h1>What I'm building next</h1>
+  <h1>What I'm building <em>next</em></h1>
   <p class="lede">Pick a project to get early access before anyone else.</p>
   <ul class="projects">{cards}</ul>
 </main>"""

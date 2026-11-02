@@ -1,6 +1,6 @@
 # Early Access
 
-Waitlist pages for my projects at **early.siddheshthapa.com**. Every project gets its own link
+Waitlist pages for my projects (with a floating "Get early access" button that follows visitors down the page) at **early.siddheshthapa.com**. Every project gets its own link
 (for example `early.siddheshthapa.com/cotsi/`), so the person you send it to only sees that one
 project. Signups land in a Google Sheet (one tab per project), and each one triggers an email alert.
 
@@ -50,7 +50,7 @@ Add one record:
 | Field | What it does |
 |---|---|
 | `slug` | The link. Lowercase letters, digits and dashes only. Don't change it after sharing. |
-| `name`, `emoji`, `tagline`, `description` | The top of the page |
+| `name`, `emoji`, `tagline`, `description` | The top of the page. Wrap words in the tagline with `*stars*` to make them the colored italic accent |
 | `accent` | The page color, like `#7c6af7` |
 | `status` | The small badge, like "Early access · launching soon" |
 | `listed` | `true` shows it on the home page; `false` keeps it reachable only by its link |

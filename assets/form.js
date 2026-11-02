@@ -40,6 +40,8 @@
     }
     form.hidden = true;
     done.hidden = false;
+    document.documentElement.classList.add("joined");
+    updateFloat();
   }
 
   function setup(form) {
@@ -109,6 +111,58 @@
           button.textContent = label;
         });
     });
+  }
+
+  // Floating "Get early access" button: shown once the hero button scrolls away,
+  // hidden while the form is on screen or after the visitor has signed up.
+  var floatCta = document.querySelector(".float-cta");
+  var visible = { hero: true, join: false };
+
+  function updateFloat() {
+    if (!floatCta) return;
+    var show = !visible.hero && !visible.join && !document.documentElement.classList.contains("joined");
+    floatCta.classList.toggle("show", show);
+    floatCta.setAttribute("aria-hidden", show ? "false" : "true");
+    floatCta.tabIndex = show ? 0 : -1;
+  }
+
+  function goToForm(event) {
+    var join = document.getElementById("join");
+    var email = join && join.querySelector("input[name=email]");
+    if (!join) return;
+    event.preventDefault();
+    join.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (email && !join.querySelector("form").hidden) {
+      setTimeout(function () { email.focus({ preventScroll: true }); }, 450);
+    }
+  }
+
+  if (floatCta && "IntersectionObserver" in window) {
+    var hero = document.querySelector(".hero .jump");
+    var join = document.getElementById("join");
+    var watch = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        visible[entry.target === hero ? "hero" : "join"] = entry.isIntersecting;
+      });
+      updateFloat();
+    }, { rootMargin: "0px 0px -10% 0px" });
+    if (hero) watch.observe(hero);
+    if (join) watch.observe(join);
+  }
+  document.querySelectorAll('a[href="#join"]').forEach(function (link) {
+    link.addEventListener("click", goToForm);
+  });
+
+  // Fade sections in as they scroll into view.
+  var reveals = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window) {
+    document.documentElement.classList.add("reveal-ready");
+    var show = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) { entry.target.classList.add("in"); show.unobserve(entry.target); }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(function (el) { show.observe(el); });
   }
 
   document.querySelectorAll("form.signup").forEach(setup);

@@ -3,10 +3,16 @@
     "title": "Early Access",
     "owner": "Siddhesh Thapa",
     "domain": "early.siddheshthapa.com",
-    "form_endpoint": "",
+    "form_endpoint": "https://script.google.com/macros/s/AKfycbwoM-VrGDlqSl6OBUr0QPmmoAdJ5zd1QXqPkKgBTyP4wMiyhWf_YIDXv_j7UlkEGeZkjQ/exec",
     "links": [
-      { "label": "siddheshthapa.com", "url": "https://siddheshthapa.com" },
-      { "label": "GitHub", "url": "https://github.com/OnePanda2" }
+      {
+        "label": "siddheshthapa.com",
+        "url": "https://siddheshthapa.com"
+      },
+      {
+        "label": "GitHub",
+        "url": "https://github.com/OnePanda2"
+      }
     ]
   },
   "projects": [
@@ -40,10 +46,30 @@
         "title": "Why can't anyone read your password on public Wi-Fi?",
         "note": "In Cotsi, these lines come from characters in the show you pick.",
         "lines": [
-          { "who": "The confused one", "avatar": "🙋", "side": "left", "text": "Easy. I lock my message in a box and mail the key separately." },
-          { "who": "The genius", "avatar": "🧠", "side": "right", "text": "Someone opens every envelope. They'd get the box and the key. So instead, the bank mails you an open padlock. Anyone can snap it shut. Only the bank can open it." },
-          { "who": "The skeptic", "avatar": "🤨", "side": "left", "text": "Unless someone swaps the padlock on the way." },
-          { "who": "The genius", "avatar": "🧠", "side": "right", "text": "Exactly why websites need certificates. That's lesson two." }
+          {
+            "who": "The confused one",
+            "avatar": "🙋",
+            "side": "left",
+            "text": "Easy. I lock my message in a box and mail the key separately."
+          },
+          {
+            "who": "The genius",
+            "avatar": "🧠",
+            "side": "right",
+            "text": "Someone opens every envelope. They'd get the box and the key. So instead, the bank mails you an open padlock. Anyone can snap it shut. Only the bank can open it."
+          },
+          {
+            "who": "The skeptic",
+            "avatar": "🤨",
+            "side": "left",
+            "text": "Unless someone swaps the padlock on the way."
+          },
+          {
+            "who": "The genius",
+            "avatar": "🧠",
+            "side": "right",
+            "text": "Exactly why websites need certificates. That's lesson two."
+          }
         ]
       },
       "cta": "Get early access",

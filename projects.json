@@ -1,0 +1,53 @@
+{
+  "site": {
+    "title": "Early Access",
+    "owner": "Siddhesh Thapa",
+    "domain": "early.siddheshthapa.com",
+    "form_endpoint": "",
+    "links": [
+      { "label": "siddheshthapa.com", "url": "https://siddheshthapa.com" },
+      { "label": "GitHub", "url": "https://github.com/OnePanda2" }
+    ]
+  },
+  "projects": [
+    {
+      "slug": "cotsi",
+      "name": "Cotsi",
+      "emoji": "🎬",
+      "accent": "#7c6af7",
+      "status": "Early access · launching soon",
+      "listed": true,
+      "tagline": "Learn anything through your favorite characters.",
+      "description": "Cotsi turns complex topics into short scenes where characters from the show you love explain them to each other. It teaches the few ideas that matter most first, then asks you quick questions so it actually sticks.",
+      "highlights": [
+        {
+          "icon": "🎭",
+          "title": "Your show, your characters",
+          "text": "Every idea plays out as dialogue between characters you already know, so it feels familiar from the first line."
+        },
+        {
+          "icon": "🗺️",
+          "title": "The 20% that matters first",
+          "text": "Cotsi finds the handful of core ideas a whole topic rests on and teaches those before anything else."
+        },
+        {
+          "icon": "🧠",
+          "title": "Built to stick",
+          "text": "A quick question after every idea and short reviews over the next few days, so you remember it next week, not just tonight."
+        }
+      ],
+      "demo": {
+        "title": "Why can't anyone read your password on public Wi-Fi?",
+        "note": "In Cotsi, these lines come from characters in the show you pick.",
+        "lines": [
+          { "who": "The confused one", "avatar": "🙋", "side": "left", "text": "Easy. I lock my message in a box and mail the key separately." },
+          { "who": "The genius", "avatar": "🧠", "side": "right", "text": "Someone opens every envelope. They'd get the box and the key. So instead, the bank mails you an open padlock. Anyone can snap it shut. Only the bank can open it." },
+          { "who": "The skeptic", "avatar": "🤨", "side": "left", "text": "Unless someone swaps the padlock on the way." },
+          { "who": "The genius", "avatar": "🧠", "side": "right", "text": "Exactly why websites need certificates. That's lesson two." }
+        ]
+      },
+      "cta": "Get early access",
+      "success": "You're on the Cotsi list. I'll message you the moment early access opens."
+    }
+  ]
+}

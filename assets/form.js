@@ -1,0 +1,115 @@
+// Early-access signup form. Posts to the Google Apps Script web app set in
+// projects.json (site.form_endpoint) and shows a "you're in" panel on success.
+(function () {
+  "use strict";
+
+  var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  function phoneDigits(value) {
+    return value.replace(/[^\d]/g, "");
+  }
+
+  function source() {
+    var params = new URLSearchParams(location.search);
+    var ref = params.get("ref") || params.get("from") || params.get("utm_source");
+    if (ref) return ref.slice(0, 60);
+    try {
+      if (document.referrer) return new URL(document.referrer).hostname;
+    } catch (e) {}
+    return "direct";
+  }
+
+  function remember(slug, position) {
+    try { localStorage.setItem("ea:" + slug, JSON.stringify({ position: position || null })); } catch (e) {}
+  }
+
+  function recall(slug) {
+    try { return JSON.parse(localStorage.getItem("ea:" + slug) || "null"); } catch (e) { return null; }
+  }
+
+  function showDone(form, position, already) {
+    var section = form.parentElement;
+    var done = section.querySelector(".done");
+    var pos = done.querySelector(".position");
+    if (position) {
+      pos.textContent = already
+        ? "You were already on the list: #" + position + "."
+        : "You're #" + position + " on the waitlist.";
+    } else if (already) {
+      pos.textContent = "You're already on the list.";
+    }
+    form.hidden = true;
+    done.hidden = false;
+  }
+
+  function setup(form) {
+    var slug = form.dataset.project;
+    var status = form.querySelector(".status");
+    var button = form.querySelector("button[type=submit]");
+    var label = button.textContent;
+
+    var saved = recall(slug);
+    if (saved) showDone(form, saved.position, true);
+
+    function say(message, isError) {
+      status.textContent = message;
+      status.classList.toggle("error", Boolean(isError));
+    }
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var email = form.email.value.trim();
+      var phone = form.phone.value.trim();
+      var name = form.name.value.trim();
+
+      if (form.website.value) { showDone(form); return; } // bot filled the hidden field
+      if (!email && !phone) { say("Add your email or phone number.", true); form.email.focus(); return; }
+      if (email && !EMAIL.test(email)) { say("That email doesn't look right.", true); form.email.focus(); return; }
+      var digits = phoneDigits(phone);
+      if (phone && (digits.length < 8 || digits.length > 15)) {
+        say("Add the full phone number, with country code (like +91).", true); form.phone.focus(); return;
+      }
+      if (!form.dataset.endpoint) { say("Signups aren't connected yet. Please try again soon.", true); return; }
+
+      var body = new URLSearchParams({
+        project: slug,
+        project_name: form.dataset.projectName || slug,
+        email: email,
+        phone: phone,
+        name: name,
+        ref: source(),
+        page: location.href.split("#")[0]
+      });
+
+      button.disabled = true;
+      button.textContent = "Joining…";
+      say("");
+
+      fetch(form.dataset.endpoint, { method: "POST", body: body })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (!data || !data.ok) throw new Error((data && data.error) || "server");
+          remember(slug, data.position);
+          showDone(form, data.position, data.status === "exists");
+        })
+        .catch(function (err) {
+          if (err instanceof TypeError) {
+            // The browser blocked reading the reply (CORS). Send it without reading the answer.
+            return fetch(form.dataset.endpoint, { method: "POST", body: body, mode: "no-cors" })
+              .then(function () { remember(slug); showDone(form); });
+          }
+          throw err;
+        })
+        .catch(function (err) {
+          var known = err && err.message && err.message !== "server" ? err.message : null;
+          say(known || "Something went wrong. Please try again in a moment.", true);
+        })
+        .finally(function () {
+          button.disabled = false;
+          button.textContent = label;
+        });
+    });
+  }
+
+  document.querySelectorAll("form.signup").forEach(setup);
+})();

@@ -283,3 +283,5 @@ h1 em {
   .reveal-ready .reveal { opacity: 1; transform: none; transition: none; }
   .float-cta { transition: opacity 0.2s; transform: none; }
 }
+
+[hidden] { display: none !important; }

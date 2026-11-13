@@ -22,6 +22,7 @@
       "emoji": "🎬",
       "accent": "#7c6af7",
       "status": "Early access · launching soon",
+      "status_live": "Live now · free while in early access",
       "listed": true,
       "tagline": "Learn anything through *your favorite characters.*",
       "description": "Cotsi turns complex topics into short scenes where characters from the show you love explain them to each other. It teaches the few ideas that matter most first, then asks you quick questions so it actually sticks.",
@@ -73,7 +74,9 @@
         ]
       },
       "cta": "Get early access",
-      "success": "You're on the Cotsi list. I'll message you the moment early access opens."
+      "success": "You're on the Cotsi list. I'll message you the moment early access opens.",
+      "launch_url": "https://cotsi.siddheshthapa.com",
+      "launch_at": "2026-11-16T00:00:00+05:30"
     }
   ]
 }

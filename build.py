@@ -10,6 +10,7 @@ share shows only that project. The home page lists projects with "listed": true.
 """
 
 import json
+from datetime import datetime
 import re
 import shutil
 import sys
@@ -57,6 +58,15 @@ def load():
         seen.add(p["slug"])
         if p.get("accent") and not HEX.match(p["accent"]):
             fail(f"{where}: accent must look like #7c6af7")
+        if p.get("launch_at"):
+            if not p.get("launch_url"):
+                fail(f"{where}: launch_at needs a launch_url")
+            try:
+                when = datetime.fromisoformat(p["launch_at"])
+            except ValueError:
+                fail(f"{where}: launch_at must look like 2026-11-16T00:00:00+05:30")
+            if when.tzinfo is None:
+                fail(f"{where}: launch_at needs a time zone, like +05:30 at the end")
     return site, projects
 
 
@@ -138,12 +148,35 @@ def highlights_block(items):
     return f'<section class="highlights reveal"><ul>{cards}</ul></section>'
 
 
+def live_attrs(p, text=None, href=None, show=False):
+    """Attributes that switch an element to its 'live' state once the project launches.
+
+    With launch_url and launch_at, form.js makes the switch in the visitor's browser at that
+    moment, so no redeploy is needed on launch day. With launch_url alone it switches at once.
+    """
+    if not p.get("launch_url"):
+        return ""
+    at = p.get("launch_at") or "1970-01-01T00:00:00Z"
+    attrs = f' data-live-at="{escape(at)}"'
+    if text:
+        attrs += f' data-live-text="{escape(text)}"'
+    if href:
+        attrs += f' data-live-href="{escape(href)}"'
+    if show:
+        attrs += " data-live-show hidden"
+    return attrs
+
+
+def live_label(p):
+    return f"Open {p['name']}"
+
+
 def form_block(site, p):
     e = escape
     cta = p.get("cta") or "Get early access"
     success = p.get("success") or f"You're on the {p['name']} list. You'll hear from me when it opens."
     launch = (
-        f'<a class="launch" href="{e(p["launch_url"])}">It\'s live: open {e(p["name"])} →</a>'
+        f'<a class="launch" href="{e(p["launch_url"])}"{live_attrs(p, show=True)}>It\'s live: open {e(p["name"])} →</a>'
         if p.get("launch_url") else ""
     )
     return f"""<section class="join reveal" id="join">
@@ -184,21 +217,21 @@ def project_page(site, p):
 <main class="project">
   <section class="hero">
     <div class="logo" aria-hidden="true">{escape(p.get('emoji', '✨'))}</div>
-    <p class="badge"><span class="pulse" aria-hidden="true"></span>{escape(p.get('status', 'Early access'))}</p>
+    <p class="badge"{live_attrs(p, text=p.get('status_live') or 'Live now')}><span class="pulse" aria-hidden="true"></span><span data-live-label>{escape(p.get('status', 'Early access'))}</span></p>
     <p class="wordmark">{escape(p['name'])}</p>
     <h1>{rich(p['tagline'])}</h1>
     <p class="lede">{escape(p['description'])}</p>
     <div class="hero-cta">
-      <a class="btn jump" href="#join">{escape(p.get('cta') or 'Get early access')} <span aria-hidden="true">→</span></a>
-      <p class="meta">Free · No spam · Takes 10 seconds</p>
+      <a class="btn jump" href="#join"{live_attrs(p, text=live_label(p), href=p.get('launch_url'))}><span data-live-label>{escape(p.get('cta') or 'Get early access')}</span> <span aria-hidden="true">→</span></a>
+      <p class="meta"{live_attrs(p, text=p.get('live_meta') or 'Free while in early access')}>Free · No spam · Takes 10 seconds</p>
     </div>
   </section>
   {demo_block(p.get('demo'))}
   {highlights_block(p.get('highlights'))}
   {form_block(site, p)}
 </main>
-<a class="float-cta" href="#join" aria-hidden="true" tabindex="-1">
-  <span>{escape(p.get('cta') or 'Get early access')}</span><span class="arrow" aria-hidden="true">→</span>
+<a class="float-cta" href="#join" aria-hidden="true" tabindex="-1"{live_attrs(p, text=live_label(p), href=p.get('launch_url'))}>
+  <span data-live-label>{escape(p.get('cta') or 'Get early access')}</span><span class="arrow" aria-hidden="true">→</span>
 </a>
 <script src="/assets/form.js" defer></script>"""
     return page(site, title=f"{p['name']}: {plain(p['tagline'])}", description=p["description"],
@@ -211,7 +244,7 @@ def home_page(site, projects):
         f'<li><a href="/{escape(p["slug"])}/" style="--accent:{escape(p.get("accent") or "#7c6af7")}">'
         f'<span class="logo" aria-hidden="true">{escape(p.get("emoji", "✨"))}</span>'
         f'<span><b>{escape(p["name"])}</b><em>{escape(plain(p["tagline"]))}</em>'
-        f'<small>{escape(p.get("status", "Early access"))}</small></span><i aria-hidden="true">→</i></a></li>'
+        f'<small{live_attrs(p, text=p.get("status_live") or "Live now")}><span data-live-label>{escape(p.get("status", "Early access"))}</span></small></span><i aria-hidden="true">→</i></a></li>'
         for p in listed
     ) or "<li class=\"empty\">New projects are on the way.</li>"
     body = f"""{topbar(site)}

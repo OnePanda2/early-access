@@ -127,6 +127,8 @@
   }
 
   function goToForm(event) {
+    // After launch these buttons open the app instead of scrolling to the form.
+    if (event.currentTarget.getAttribute("href") !== "#join") return;
     var join = document.getElementById("join");
     var email = join && join.querySelector("input[name=email]");
     if (!join) return;
@@ -166,4 +168,23 @@
   }
 
   document.querySelectorAll("form.signup").forEach(setup);
+
+  // Launch day: elements with data-live-at switch to their "live" text and link at that moment
+  // (checked on load and every 30 seconds), so the page needs no redeploy when a project opens.
+  function goLive() {
+    var now = Date.now();
+    document.querySelectorAll("[data-live-at]:not([data-live-done])").forEach(function (el) {
+      var at = Date.parse(el.getAttribute("data-live-at"));
+      if (isNaN(at) || now < at) return;
+      el.setAttribute("data-live-done", "");
+      if (el.hasAttribute("data-live-show")) el.hidden = false;
+      var text = el.getAttribute("data-live-text");
+      var label = el.querySelector("[data-live-label]");
+      if (text) (label || el).textContent = text;
+      var href = el.getAttribute("data-live-href");
+      if (href) el.setAttribute("href", href);
+    });
+  }
+  goLive();
+  if (document.querySelector("[data-live-at]:not([data-live-done])")) setInterval(goLive, 30000);
 })();

@@ -57,7 +57,9 @@ Add one record:
 | `highlights` | Optional feature cards |
 | `demo` | Optional chat-style preview (delete the block if you don't want one) |
 | `cta`, `success` | The button text and the message after someone signs up |
-| `launch_url` | Optional. Once it's live, adds an "It's live" button above the form |
+| `launch_url` | Optional. The live app's address. Adds an "It's live" button above the form, and the page's buttons open the app instead of the form |
+| `launch_at` | Optional, with `launch_url`. When to switch, like `2026-11-16T00:00:00+05:30` (that's midnight in India). Before then the page looks unchanged; at that moment it switches by itself in visitors' browsers, no redeploy needed. Leave it out to switch right away |
+| `status_live` | Optional. The badge text after launch (default "Live now") |
 
 ## Sharing links
 - Send `https://early.siddheshthapa.com/cotsi/` to people who comment on a Cotsi reel.

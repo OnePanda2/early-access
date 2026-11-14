@@ -9,6 +9,7 @@ Every project in projects.json gets its own page at /<slug>/, so each link you
 share shows only that project. The home page lists projects with "listed": true.
 """
 
+import hashlib
 import json
 from datetime import datetime
 import re
@@ -22,6 +23,11 @@ DIST = ROOT / "dist"
 SLUG = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 RESERVED = {"assets", "404", "index"}
 HEX = re.compile(r"^#[0-9a-fA-F]{6}$")
+
+
+def asset_version(name):
+    """A short fingerprint of an asset, added to its link so browsers fetch the new file after a change."""
+    return hashlib.sha256((ROOT / "assets" / name).read_bytes()).hexdigest()[:10]
 
 
 def rich(text):
@@ -93,7 +99,7 @@ def page(site, *, title, description, url, accent, body, noindex=False):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/style.css?v={asset_version('style.css')}">
 <style>:root{{--accent:{e(accent)}}}</style>
 </head>
 <body>
@@ -238,7 +244,7 @@ def project_page(site, p):
 <a class="float-cta" href="#join" aria-hidden="true" tabindex="-1"{live_attrs(p, text=live_label(p), href=live_href(p))}>
   <span data-live-label>{escape(p.get('cta') or 'Get early access')}</span><span class="arrow" aria-hidden="true">→</span>
 </a>
-<script src="/assets/form.js" defer></script>"""
+<script src="/assets/form.js?v={asset_version('form.js')}" defer></script>"""
     return page(site, title=f"{p['name']}: {plain(p['tagline'])}", description=p["description"],
                 url=url, accent=accent, body=hero)
 

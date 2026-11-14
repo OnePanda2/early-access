@@ -223,7 +223,7 @@ def project_page(site, p):
     <p class="lede">{escape(p['description'])}</p>
     <div class="hero-cta">
       <a class="btn jump" href="#join"{live_attrs(p, text=live_label(p), href=p.get('launch_url'))}><span data-live-label>{escape(p.get('cta') or 'Get early access')}</span> <span aria-hidden="true">→</span></a>
-      <p class="meta"{live_attrs(p, text=p.get('live_meta') or 'Free while in early access')}>Free · No spam · Takes 10 seconds</p>
+      <p class="meta"{live_attrs(p, text=p.get('live_meta') or 'Founding members get first access')}>Limited founding spots · No spam · Takes 10 seconds</p>
     </div>
   </section>
   {demo_block(p.get('demo'))}

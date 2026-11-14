@@ -80,7 +80,10 @@
       "launch_at": "2026-11-16T00:00:00+05:30",
       "live_cta": "Become a founding member",
       "live_href": "#join",
-      "live_meta": "Limited founding spots"
+      "live_meta": "Limited founding spots",
+      "logo": "/assets/cotsi-logo.svg",
+      "touch_icon": "/assets/cotsi-apple-touch-icon.png",
+      "og_image": "/assets/cotsi-og.png"
     }
   ]
 }

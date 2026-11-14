@@ -44,6 +44,13 @@ def wordmark(p):
             f'<span class="name">{escape(p["name"])}</span><span class="sub" aria-hidden="true">{sub}</span></p>')
 
 
+def logo_tile(p, cls, tag="div"):
+    """The project's logo image if it has one, else its emoji in a tile."""
+    if p.get("logo"):
+        return f'<img class="{cls} img" src="{escape(p["logo"])}" alt="" aria-hidden="true">'
+    return f'<{tag} class="{cls}" aria-hidden="true">{escape(p.get("emoji", "✨"))}</{tag}>'
+
+
 def plain(text):
     return text.replace("*", "")
 
@@ -85,9 +92,15 @@ def load():
     return site, projects
 
 
-def page(site, *, title, description, url, accent, body, noindex=False):
+def page(site, *, title, description, url, accent, body, noindex=False, icon=None, touch_icon=None, og_image=None):
     e = escape
     robots = '<meta name="robots" content="noindex">' if noindex else ""
+    rocket = "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>"
+    extra = ""
+    if touch_icon:
+        extra += f'<link rel="apple-touch-icon" href="{e(touch_icon)}">\n'
+    if og_image:
+        extra += f'<meta property="og:image" content="https://{e(site["domain"])}{e(og_image)}">\n<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n'
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -99,11 +112,12 @@ def page(site, *, title, description, url, accent, body, noindex=False):
 <meta property="og:title" content="{e(title)}">
 <meta property="og:description" content="{e(description)}">
 <meta property="og:url" content="{e(url)}">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="{"summary_large_image" if og_image else "summary"}">
 <meta name="theme-color" content="#07060b">
 {robots}
 <link rel="canonical" href="{e(url)}">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+<link rel="icon" href="{e(icon) if icon else rocket}">
+{extra}
 <script>document.documentElement.classList.add("js")</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -236,7 +250,7 @@ def project_page(site, p):
     hero = f"""{topbar(site)}
 <main class="project">
   <section class="hero">
-    <div class="logo" aria-hidden="true">{escape(p.get('emoji', '✨'))}</div>
+    {logo_tile(p, "logo")}
     <p class="badge"{live_attrs(p, text=p.get('status_live') or 'Live now')}><span class="pulse" aria-hidden="true"></span><span data-live-label>{escape(p.get('status', 'Early access'))}</span></p>
     {wordmark(p)}
     <h1>{rich(p['tagline'])}</h1>
@@ -255,14 +269,15 @@ def project_page(site, p):
 </a>
 <script src="/assets/form.js?v={asset_version('form.js')}" defer></script>"""
     return page(site, title=f"{p['name']}: {plain(p['tagline'])}", description=p["description"],
-                url=url, accent=accent, body=hero)
+                url=url, accent=accent, body=hero,
+                icon=p.get("logo"), touch_icon=p.get("touch_icon"), og_image=p.get("og_image"))
 
 
 def home_page(site, projects):
     listed = [p for p in projects if p.get("listed")]
     cards = "".join(
         f'<li><a href="/{escape(p["slug"])}/" style="--accent:{escape(p.get("accent") or "#7c6af7")}">'
-        f'<span class="logo" aria-hidden="true">{escape(p.get("emoji", "✨"))}</span>'
+        f'{logo_tile(p, "logo", tag="span")}'
         f'<span><b>{escape(p["name"])}</b><em>{escape(plain(p["tagline"]))}</em>'
         f'<small{live_attrs(p, text=p.get("status_live") or "Live now")}><span data-live-label>{escape(p.get("status", "Early access"))}</span></small></span><i aria-hidden="true">→</i></a></li>'
         for p in listed

@@ -117,6 +117,7 @@ main { max-width: 720px; margin: 0 auto; padding: 0 20px; }
   font-size: clamp(38px, 10vw, 64px); line-height: 1.06; letter-spacing: -0.02em;
   margin: 0 0 20px;
 }
+.nw { white-space: nowrap; }
 h1 em {
   font-style: normal;
   background: linear-gradient(100deg, var(--accent-2), #c9bfff 50%, var(--accent));

@@ -32,7 +32,9 @@ def asset_version(name):
 
 def rich(text):
     """Escape text and turn *words* into <em>words</em> (used for the headline accent)."""
-    return re.sub(r"\*(.+?)\*", r"<em>\1</em>", escape(text))
+    html = re.sub(r"\*(.+?)\*", r"<em>\1</em>", escape(text))
+    # Keep hyphenated words ("job-ready") on one line so the headline never breaks at the hyphen.
+    return re.sub(r"\b(\w+(?:-\w+)+)\b", r'<span class="nw">\1</span>', html)
 
 
 def wordmark(p):

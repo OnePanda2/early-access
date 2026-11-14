@@ -25,23 +25,23 @@
       "status": "Early access · launching soon",
       "status_live": "Founding-member sales open",
       "listed": true,
-      "tagline": "Learn anything through *your favorite characters.*",
-      "description": "Cotsi turns complex topics into short scenes where characters from the show you love explain them to each other. It teaches the few ideas that matter most first, then asks you quick questions so it actually sticks.",
+      "tagline": "Upload your CV. Learn *only what you're missing.*",
+      "description": "Cotsi reads your CV, finds the roles rising in your field over the next 3–6 months, and builds a syllabus of only the skills you're missing, sized to the hours you have. Then it teaches each one in short lessons and helps you find openings where you stand out.",
       "highlights": [
         {
-          "icon": "🎭",
-          "title": "Your show, your characters",
-          "text": "Every idea plays out as dialogue between characters you already know, so it feels familiar from the first line."
+          "icon": "📄",
+          "title": "Starts from your CV",
+          "text": "Cotsi reads what you already know, so you never sit through lessons on skills you already have."
         },
         {
-          "icon": "🗺️",
-          "title": "The 20% that matters first",
-          "text": "Cotsi finds the handful of core ideas a whole topic rests on and teaches those before anything else."
+          "icon": "📈",
+          "title": "Aimed at roles that are rising",
+          "text": "It checks hiring, funding and new tools for roles likely to grow in your field, with the evidence linked. Forecasts, not job guarantees."
         },
         {
           "icon": "🧠",
-          "title": "Built to stick",
-          "text": "A quick question after every idea and short reviews over the next few days, so you remember it next week, not just tonight."
+          "title": "Learned so it sticks",
+          "text": "The few ideas that matter most come first, played out as scenes with characters you like, with a quick check after each one."
         }
       ],
       "demo": {

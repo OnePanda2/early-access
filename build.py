@@ -168,7 +168,12 @@ def live_attrs(p, text=None, href=None, show=False):
 
 
 def live_label(p):
-    return f"Open {p['name']}"
+    return p.get("live_cta") or f"Open {p['name']}"
+
+
+def live_href(p):
+    """Where the main buttons point after launch: the app by default, or e.g. "#join"."""
+    return p.get("live_href") or p.get("launch_url")
 
 
 def form_block(site, p):
@@ -177,7 +182,7 @@ def form_block(site, p):
     success = p.get("success") or f"You're on the {p['name']} list. You'll hear from me when it opens."
     launch = (
         f'<a class="launch" href="{e(p["launch_url"])}"{live_attrs(p, show=True)}>It\'s live: open {e(p["name"])} →</a>'
-        if p.get("launch_url") else ""
+        if p.get("launch_url") and p.get("live_href", p.get("launch_url")) == p.get("launch_url") else ""
     )
     return f"""<section class="join reveal" id="join">
   {launch}
@@ -222,7 +227,7 @@ def project_page(site, p):
     <h1>{rich(p['tagline'])}</h1>
     <p class="lede">{escape(p['description'])}</p>
     <div class="hero-cta">
-      <a class="btn jump" href="#join"{live_attrs(p, text=live_label(p), href=p.get('launch_url'))}><span data-live-label>{escape(p.get('cta') or 'Get early access')}</span> <span aria-hidden="true">→</span></a>
+      <a class="btn jump" href="#join"{live_attrs(p, text=live_label(p), href=live_href(p))}><span data-live-label>{escape(p.get('cta') or 'Get early access')}</span> <span aria-hidden="true">→</span></a>
       <p class="meta"{live_attrs(p, text=p.get('live_meta') or 'Founding members get first access')}>Limited founding spots · No spam · Takes 10 seconds</p>
     </div>
   </section>
@@ -230,7 +235,7 @@ def project_page(site, p):
   {highlights_block(p.get('highlights'))}
   {form_block(site, p)}
 </main>
-<a class="float-cta" href="#join" aria-hidden="true" tabindex="-1"{live_attrs(p, text=live_label(p), href=p.get('launch_url'))}>
+<a class="float-cta" href="#join" aria-hidden="true" tabindex="-1"{live_attrs(p, text=live_label(p), href=live_href(p))}>
   <span data-live-label>{escape(p.get('cta') or 'Get early access')}</span><span class="arrow" aria-hidden="true">→</span>
 </a>
 <script src="/assets/form.js" defer></script>"""

@@ -35,6 +35,15 @@ def rich(text):
     return re.sub(r"\*(.+?)\*", r"<em>\1</em>", escape(text))
 
 
+def wordmark(p):
+    """The project's name, with an optional subtitle where **letters** are highlighted."""
+    if not p.get("subtitle"):
+        return f'<p class="wordmark">{escape(p["name"])}</p>'
+    sub = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", escape(p["subtitle"]))
+    return (f'<p class="wordmark lockup" aria-label="{escape(p["name"])}, {escape(plain(p["subtitle"]))}">'
+            f'<span class="name">{escape(p["name"])}</span><span class="sub" aria-hidden="true">{sub}</span></p>')
+
+
 def plain(text):
     return text.replace("*", "")
 
@@ -229,7 +238,7 @@ def project_page(site, p):
   <section class="hero">
     <div class="logo" aria-hidden="true">{escape(p.get('emoji', '✨'))}</div>
     <p class="badge"{live_attrs(p, text=p.get('status_live') or 'Live now')}><span class="pulse" aria-hidden="true"></span><span data-live-label>{escape(p.get('status', 'Early access'))}</span></p>
-    <p class="wordmark">{escape(p['name'])}</p>
+    {wordmark(p)}
     <h1>{rich(p['tagline'])}</h1>
     <p class="lede">{escape(p['description'])}</p>
     <div class="hero-cta">

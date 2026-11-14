@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "Thapa";
+  src: url("/assets/Thapa-Bold.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --accent: #7c6af7;
   --accent-2: color-mix(in srgb, var(--accent) 55%, #ff7ac6);
@@ -10,7 +18,7 @@
   --faint: #6f6b82;
   --line: rgba(255, 255, 255, 0.08);
   --error: #ff8a80;
-  --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --serif: Thapa, Inter, -apple-system, "Segoe UI", Roboto, sans-serif;
   --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   --radius: 22px;
   color-scheme: dark;
@@ -92,13 +100,20 @@ main { max-width: 720px; margin: 0 auto; padding: 0 20px; }
   margin: 0 0 6px; font-size: 15px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase;
   color: var(--accent-2);
 }
+.wordmark.lockup {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  margin: 0 0 14px; text-transform: none; letter-spacing: 0;
+}
+.wordmark.lockup .name { font: 700 30px/1 var(--serif); color: var(--text); letter-spacing: -0.01em; }
+.wordmark.lockup .sub { font: 500 11px/1 var(--sans); letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.wordmark.lockup .sub b { font-weight: 700; color: #cfc7ff; }
 .hero h1, .home h1 {
-  font-family: var(--serif); font-weight: 400;
-  font-size: clamp(42px, 11vw, 72px); line-height: 1.02; letter-spacing: -0.015em;
+  font-family: var(--serif); font-weight: 700;
+  font-size: clamp(38px, 10vw, 64px); line-height: 1.06; letter-spacing: -0.02em;
   margin: 0 0 20px;
 }
 h1 em {
-  font-style: italic;
+  font-style: normal;
   background: linear-gradient(100deg, var(--accent-2), #c9bfff 50%, var(--accent));
   -webkit-background-clip: text; background-clip: text; color: transparent;
   padding-right: 0.05em;
@@ -133,7 +148,7 @@ h1 em {
 .window-bar span { margin-left: auto; font-size: 12px; color: var(--faint); }
 .demo-body { padding: 22px 18px 20px; }
 .kicker { margin: 0; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-2); }
-.demo h2 { font-family: var(--serif); font-weight: 400; font-size: 26px; line-height: 1.2; margin: 8px 0 20px; }
+.demo h2 { font-family: var(--serif); font-weight: 700; font-size: 26px; line-height: 1.2; margin: 8px 0 20px; }
 .chat { display: flex; flex-direction: column; gap: 12px; }
 .line { display: flex; gap: 10px; align-items: flex-end; max-width: 90%; }
 .line.right { flex-direction: row-reverse; align-self: flex-end; }
@@ -183,7 +198,7 @@ h1 em {
     linear-gradient(150deg, var(--accent-2), rgba(255, 255, 255, 0.06) 45%, var(--accent)) border-box;
   border: 1px solid transparent; border-radius: 26px;
 }
-.signup h2, .done h2 { font-family: var(--serif); font-weight: 400; font-size: 34px; line-height: 1.1; margin: 0 0 6px; }
+.signup h2, .done h2 { font-family: var(--serif); font-weight: 700; font-size: 34px; line-height: 1.1; margin: 0 0 6px; }
 .sub { margin: 0 0 22px; color: var(--muted); font-size: 15px; }
 .signup label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin: 0 0 14px; letter-spacing: 0.01em; }
 .signup label small { color: var(--faint); font-weight: 400; }
